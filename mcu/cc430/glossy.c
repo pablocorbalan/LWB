@@ -34,6 +34,7 @@
 
 #include "contiki.h"
 #include "platform.h"
+#include "dev/glossy.h"
 
 /*---------------------------------------------------------------------------*/
 #ifndef GLOSSY_CONF_RTIMER_ID
@@ -200,51 +201,7 @@
 #endif /* GLOSSY_FIRST_RX */
 
 /*---------------------------------------------------------------------------*/
-enum {
-  SUCCESS = 0,
-  FAIL = 1
-};
-/*---------------------------------------------------------------------------*/
-typedef struct {
-  uint16_t initiator_id;
-  uint8_t pkt_type;
-  uint8_t relay_cnt;
-} glossy_header_t;
-/*---------------------------------------------------------------------------*/
-typedef struct {
-  rtimer_clock_t t_ref, t_tx_stop, t_rx_start, t_rx_stop, t_tx_start;
-  rtimer_clock_t T_slot_sum;
-  rtimer_clock_t T_slot_estimated;
-  rtimer_clock_t t_timeout;
-  glossy_header_t header;
-  uint8_t *payload;
-  uint8_t payload_len;
-  uint8_t n_T_slot;
-  uint8_t active;
-  uint8_t n_rx;
-  uint8_t n_tx;
-  uint8_t n_rx_started;
-  uint8_t n_rx_fail;
-  uint8_t n_header_fail;
-  uint8_t already_counted;
-  uint8_t relay_cnt_last_rx, relay_cnt_last_tx, relay_cnt_first_rx,
-          relay_cnt_t_ref;
-  uint8_t relay_cnt_timeout;
-  uint8_t t_ref_updated;
-  uint8_t header_ok;
-#ifdef GLOSSY_DISABLE_INTERRUPTS
-  uint32_t enabled_interrupts;
-  uint16_t enabled_adc_interrupts;
-  uint16_t enabled_port_interrupts;
-#endif /* GLOSSY_DISABLE_INTERRUPTS */
-  int16_t  rssi_sum;
-  int16_t  rssi_noise;
-  uint32_t pkt_cnt;
-  uint32_t crc_ok_cnt;
-} glossy_state_t;
-/*---------------------------------------------------------------------------*/
 static glossy_state_t g;
-
 /*------------------------ Glossy helper functions --------------------------*/
 static inline uint8_t
 process_glossy_header(uint8_t *pkt, uint8_t pkt_len, uint8_t crc_ok)
